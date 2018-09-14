@@ -42,6 +42,8 @@ import id.zelory.compressor.Compressor;
 
 public class NewPostAct extends AppCompatActivity {
 
+//    Declare all stuff here
+
     private static final int MAX_LENGTH = 100;
     private Toolbar toolbar;
     private ImageView newpost_image;
@@ -63,6 +65,9 @@ public class NewPostAct extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_post);
 
+//         Initialize FirebaseAuth here
+//        Initialize all other thigs here
+
         storageReference = FirebaseStorage.getInstance().getReference();
         firebaseFirestore = FirebaseFirestore.getInstance();
         firebaseAuth = FirebaseAuth.getInstance();
@@ -79,19 +84,30 @@ public class NewPostAct extends AppCompatActivity {
 
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Wait a while");
+        progressDialog.setCanceledOnTouchOutside(false);
+
+//        Set onclickLstener on floting button
 
         newpost_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
+//              Here i am creating one string and get the text from newpost_des
+
                 final String descripiton = newpost_desc.getText().toString();
+
+//              Set the condition for  descripton && Image
+//              the condition is if my description and image field are not empty than start Uploding process
+//                and show progress dialog
+
                 if (!TextUtils.isEmpty(descripiton) && newpost_imageUri!=null){
 
                     progressDialog.show();
 
-                    final String random_name = random();
 
-                    StorageReference filepath = storageReference.child("post_images").child(random_name +"jpg");
+//                    here i creat firebase Storage Refrence for putting my image file
+
+                    StorageReference filepath = storageReference.child("post_images").child("jpg");
 
                     filepath.putFile(newpost_imageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                         @Override
@@ -101,6 +117,10 @@ public class NewPostAct extends AppCompatActivity {
 
 
                             if (task.isSuccessful()){
+
+//                              here i compress image file because when i retriew my image file on my device it
+//                                retriving late
+
 
                                 File newimagefle = new File(newpost_imageUri.getPath());
 
@@ -114,11 +134,13 @@ public class NewPostAct extends AppCompatActivity {
                                     e.printStackTrace();
                                 }
 
+//                                These solution i get from internet
+
                                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                                 compressedImagefile.compress(Bitmap.CompressFormat.JPEG,100,baos);
                                 byte[] thumbdata = baos.toByteArray();
 
-                                UploadTask uploadTask = storageReference.child("post_image/Thumbs").child(random_name +"jpg")
+                                UploadTask uploadTask = storageReference.child("post_image/Thumbs").child("jpg")
                                         .putBytes(thumbdata);
 
                                 uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -127,17 +149,20 @@ public class NewPostAct extends AppCompatActivity {
 
                                     String downlaodThumbsUri = taskSnapshot.getDownloadUrl().toString();
 
+//                                    when my file uploaded
+
                                         Map<String,Object> postMap = new HashMap<>();
                                         postMap.put("image_url",downloadUri);
-                                        postMap.put("thumbs_url",downlaodThumbsUri);
+//                                        postMap.put("thumbs_url",downlaodThumbsUri)
                                         postMap.put("description",descripiton);
                                         postMap.put("current_user",current_user_id);
-//                                        postMap.put("Comment",user_comment);
                                         postMap.put("timestamp",FieldValue.serverTimestamp());
 
                                         firebaseFirestore.collection("Post").add(postMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                                             @Override
                                             public void onComplete(@NonNull Task<DocumentReference> task) {
+
+//                                                when my uploading task finshed it back to main  activity
 
                                                 if (task.isSuccessful()){
 
@@ -184,16 +209,15 @@ public class NewPostAct extends AppCompatActivity {
             }
         });
 
+//        Here i setOnclickListener On Image View
 
         newpost_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-
+//         when i open my gallery and select any picture it ask for croping image
                 CropImage.activity()
                         .setGuidelines(CropImageView.Guidelines.ON)
-//                        .setInitialCropWindowRectangle()
-//                        .setAspectRatio(1,1)
                         .setMinCropResultSize(512,512)
                         .start(NewPostAct.this);
 
@@ -202,6 +226,8 @@ public class NewPostAct extends AppCompatActivity {
         });
     }
 
+// here i creat OnCtivity result method
+//    By the help of android startActivityResult() method, we can get result from another activity.
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -213,6 +239,7 @@ public class NewPostAct extends AppCompatActivity {
                 newpost_imageUri = result.getUri();
 
                 newpost_image.setImageURI(newpost_imageUri);
+
 //                isChanged = true;
 
 
@@ -223,15 +250,4 @@ public class NewPostAct extends AppCompatActivity {
 
     }
 
-    public static String random() {
-        Random generator = new Random();
-        StringBuilder randomStringBuilder = new StringBuilder();
-        int randomLength = generator.nextInt(MAX_LENGTH);
-        char tempChar;
-        for (int i = 0; i < randomLength; i++){
-            tempChar = (char) (generator.nextInt(96) + 32);
-            randomStringBuilder.append(tempChar);
-        }
-        return randomStringBuilder.toString();
-    }
 }

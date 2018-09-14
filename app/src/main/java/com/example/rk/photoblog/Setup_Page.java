@@ -50,6 +50,7 @@ public class Setup_Page extends AppCompatActivity {
     private String user_id;
     private boolean isChanged = false;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,6 +67,7 @@ public class Setup_Page extends AppCompatActivity {
         setup_toolbar = findViewById(R.id.setup_tolbar);
         setSupportActionBar(setup_toolbar);
         getSupportActionBar().setTitle("Account Setup");
+        setup_toolbar.setNavigationIcon(R.mipmap.backbtn);
 
         setupname = findViewById(R.id.setup_name);
         setupbtn = findViewById(R.id.setup_btn);
@@ -91,10 +93,11 @@ public class Setup_Page extends AppCompatActivity {
 
                         mainimageuri = Uri.parse(image);
 
-                        RequestOptions placeholderrequestOption = new RequestOptions();
-                        placeholderrequestOption.placeholder(R.drawable.profile);
+//                        RequestOptions placeholderrequestOption = new RequestOptions();
+//                        placeholderrequestOption.placeholder(R.drawable.profile);
 
-                        Glide.with(Setup_Page.this).setDefaultRequestOptions(placeholderrequestOption).load(image).into(setupimage);
+//                        Glide.with(Setup_Page.this).setDefaultRequestOptions(placeholderrequestOption).load(image).into(setupimage);
+                        Glide.with(Setup_Page.this).load(image).into(setupimage);
 
                         Toast.makeText(Setup_Page.this,"Data Exists",Toast.LENGTH_LONG).show();
 
@@ -138,6 +141,8 @@ public class Setup_Page extends AppCompatActivity {
 
                                    if (task.isSuccessful()) {
 
+//                                       Here i creat method
+
                                        StroreFirestre(task, Username);
 
                                    } else {
@@ -168,7 +173,7 @@ public class Setup_Page extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
 
                     if (ContextCompat.checkSelfPermission(Setup_Page.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
 
@@ -194,6 +199,26 @@ public class Setup_Page extends AppCompatActivity {
             }
         });
 
+
+        setup_toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(Setup_Page.this,MainActivity.class);
+                startActivity(i);
+
+            }
+        });
+
+
+
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent i = new Intent(Setup_Page.this,MainActivity.class);
+        startActivity(i);
+        super.onBackPressed();
     }
 
     private void StroreFirestre(@NonNull Task<UploadTask.TaskSnapshot> task, String Username) {

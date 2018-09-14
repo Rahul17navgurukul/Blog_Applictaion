@@ -41,8 +41,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapter.ViewHolder> {
 
     public List<BlogPost> blog_list;
-//    public List<User> userlist;
-
 
     Context context;
 
@@ -52,9 +50,12 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
     public BlogRecyclerAdapter(List<BlogPost> blog_list){
 
         this.blog_list = blog_list;
-//        this.userlist = userList;
 
     }
+
+
+
+
 
     @NonNull
     @Override
@@ -88,14 +89,6 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
 
 
 
-//        final String blogUserId = blog_list.get(position).current_user;
-//
-//        String name = userlist.get(position).getName();
-//        String image = userlist.get(position).getImage();
-//
-//        holder.UsserData(name,image);
-
-
         final String user_id = blog_list.get(position).getCurrent_user();
         //User Data will be retrieved here...
         firebaseFirestore.collection("User").document(user_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -114,32 +107,29 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
                         holder.UsserData(userName, userImage);
 
 
-
-
                     } else {
 
                     }
-
 
 
                 }
 
             }
         });
-//
-//        try {
-//            long millisecond = blog_list.get(position).getTimestamp().getTime();
-//            String dateString = android.text.format.DateFormat.format("dd/MM/yyyy", new Date(millisecond)).toString();
-//            holder.datetime(dateString);
-//        } catch (Exception e) {
-//
-//            Toast.makeText(context, "Exception : " + e.getMessage(), Toast.LENGTH_SHORT).show();
-//
-//        }
 
-        long millisecond = blog_list.get(position).getTimestamp().getTime();
-        String dateString = android.text.format.DateFormat.format("dd/MM/yyyy", new Date(millisecond)).toString();
-        holder.datetime(dateString);
+        try {
+            long millisecond = blog_list.get(position).getTimestamp().getTime();
+            String dateString = android.text.format.DateFormat.format("dd/MM/yyyy", new Date(millisecond)).toString();
+            holder.datetime(dateString);
+        } catch (Exception e) {
+
+            Toast.makeText(context, "Exception : " + e.getMessage(), Toast.LENGTH_SHORT).show();
+
+        }
+
+//        long millisecond = blog_list.get(position).getTimestamp().getTime();
+//        String dateString = android.text.format.DateFormat.format("dd/MM/yyyy", new Date(millisecond)).toString();
+//        holder.datetime(dateString);
 
 
         if (user_id.equals(currentuserid)){
@@ -148,7 +138,6 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
             holder.deletpost.setVisibility(View.VISIBLE);
 
         }
-
 
 
         firebaseFirestore.collection("Post/"+blogpostId+"/Likes").addSnapshotListener(
@@ -160,7 +149,6 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
 
                     int count = documentSnapshots.size();
                     holder.update_like_count(count);
-
 
                 }else {
 
@@ -274,6 +262,7 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
         private TextView blogdate;
         private ImageView postlike;
         private ImageView postliked_red;
+        private ImageView share;
 
         private TextView likeCount;
         private ImageView commentbtn;
@@ -292,6 +281,19 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
             commentbtn = mView.findViewById(R.id.comment_btn);
 
             deletpost = mView.findViewById(R.id.deletbtn);
+
+            share = mView.findViewById(R.id.imageView4);
+            share.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                    sharingIntent.setType("text/plain");
+                    sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Photo Blog");
+                    sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, "If you want to install this applicaton than visit here https://drive.google.com/open?id=1cJ279GeEfZT7wd8CQp0gCx4TOVIwifWH ");
+                    context.startActivity(Intent.createChooser(sharingIntent, "Share via"));
+                }
+            });
 
         }
 
@@ -324,6 +326,8 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
             placeholder.placeholder(R.drawable.profile);
 
             Glide.with(context).applyDefaultRequestOptions(placeholder).load(image).into(currentuser);
+
+//            Glide.with(context).load(image).into(currentuser);
         }
 
         public void datetime(String date){
@@ -341,4 +345,5 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
 
 
     }
+
 }

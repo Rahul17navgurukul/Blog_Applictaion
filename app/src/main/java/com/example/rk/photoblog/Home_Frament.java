@@ -4,8 +4,11 @@ package com.example.rk.photoblog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,8 +25,11 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import org.json.JSONArray;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 
 /**
@@ -32,17 +38,12 @@ import java.util.List;
 public class Home_Frament extends Fragment {
     private RecyclerView blog_list_view;
     private List<BlogPost> blog_list;
-    private List<User>userList;
     private FirebaseFirestore firebaseFirestore;
-
     private BlogRecyclerAdapter blogRecyclerAdapter;
 
     private FirebaseAuth firebaseAuth;
 
-    private DocumentSnapshot lastVisible;
-    private Boolean isFirstPageFirstLoad = true;
-
-
+    private SwipeRefreshLayout swipeContainer;
 
     public Home_Frament() {
         // Required empty public constructor
@@ -55,8 +56,8 @@ public class Home_Frament extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home__frament, container, false);
 
+
         blog_list = new ArrayList<>();
-//        userList = new ArrayList<>();
 
         blog_list_view = view.findViewById(R.id.blogpostlist);
 
@@ -67,6 +68,7 @@ public class Home_Frament extends Fragment {
         blog_list_view.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         blog_list_view.setAdapter(blogRecyclerAdapter);
+
 
 //        if(firebaseAuth.getCurrentUser() != null) {
 //
@@ -133,11 +135,14 @@ public class Home_Frament extends Fragment {
 //
 //            });
 
+//        Set the condition here
+//        It work when user logged in
 
         if (firebaseAuth.getCurrentUser() != null) {
 
             firebaseFirestore = FirebaseFirestore.getInstance();
 
+//            Here i start Query beacuse when i post somethig it will come first with the help of timetamp
             Query firstQuery = firebaseFirestore.collection("Post").orderBy("timestamp", Query.Direction.DESCENDING);
 
             firstQuery.addSnapshotListener(getActivity(), new EventListener<QuerySnapshot>() {
@@ -151,7 +156,7 @@ public class Home_Frament extends Fragment {
                             String blogpostid = doc.getDocument().getId();
 
 
-                             final BlogPost blogPost = doc.getDocument().toObject(BlogPost.class).withId(blogpostid);
+                            final BlogPost blogPost = doc.getDocument().toObject(BlogPost.class).withId(blogpostid);
 
                             String blog_user_id = doc.getDocument().getString("current_user");
 
@@ -187,11 +192,6 @@ public class Home_Frament extends Fragment {
                             blogRecyclerAdapter.notifyDataSetChanged();
 
 
-
-
-
-
-
                         }
                     }
 
@@ -200,13 +200,39 @@ public class Home_Frament extends Fragment {
 
         }
 
+
+        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
+        // Setup refresh listener which triggers new data loading
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+//                blog_list.add(0,blog_list.get(new Random().nextInt(blog_list.size())));
+
+                blogRecyclerAdapter.notifyDataSetChanged();
+
+                swipeContainer.setRefreshing(false);
+
+
+            }
+        });
+
+        // Configure the refreshing colors
+        swipeContainer.setColorSchemeResources(
+                android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
         return view;
-
-
     }
 
 
 
 }
+
+
+
+
 
 

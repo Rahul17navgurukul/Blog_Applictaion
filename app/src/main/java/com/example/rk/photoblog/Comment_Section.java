@@ -126,8 +126,8 @@ public class Comment_Section extends AppCompatActivity {
 
                             }else {
                                 comment_et.setText("");
-                                Intent main = new Intent(Comment_Section.this,MainActivity.class);
-                                startActivity(main);
+//                                Intent main = new Intent(Comment_Section.this,MainActivity.class);
+//                                startActivity(main);
                                 progressDialog.dismiss();
 
                             }
@@ -141,40 +141,6 @@ public class Comment_Section extends AppCompatActivity {
             }
         });
 
-//        coment_btn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//
-//                progressDialog.setMessage("Wait a min");
-//                progressDialog.setTitle("Posting");
-//                progressDialog.show();
-//
-//                String msg = comment_et.getText().toString();
-//
-//                Map<String,Object> postMap = new HashMap<>();
-//                postMap.put("userComment",msg);
-//
-//
-//
-//                firebaseFirestore.collection("comment").add(postMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<DocumentReference> task) {
-//
-//
-//                        if (task.isSuccessful()){
-//
-//                            Toast.makeText(Comment_Section.this,"hello",Toast.LENGTH_LONG).show();
-//                            Intent main = new Intent(Comment_Section.this,MainActivity.class);
-//                            startActivity(main);
-//                            progressDialog.dismiss();
-//                        }
-//
-//                    }
-//                });
-//
-//
-//            }
-//        });
 
 
     }

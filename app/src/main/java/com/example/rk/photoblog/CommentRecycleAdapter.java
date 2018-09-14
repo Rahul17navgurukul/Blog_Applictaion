@@ -32,15 +32,12 @@ public class CommentRecycleAdapter extends RecyclerView.Adapter<CommentRecycleAd
 
         this.commentsList = commentsList;
 
-
     }
 
     public Context context;
 
-
     FirebaseFirestore firebaseFirestore;
     FirebaseAuth firebaseAuth;
-
 
     @NonNull
     @Override
@@ -72,27 +69,49 @@ public class CommentRecycleAdapter extends RecyclerView.Adapter<CommentRecycleAd
 
 
 
-
-        firebaseFirestore.collection("Post/"+User_id+"/Comments").document(currentuserid)
-                .addSnapshotListener(new EventListener<DocumentSnapshot>() {
-                    @Override
-                    public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
-
-                        if (documentSnapshot.exists()){
-
-                            String username = documentSnapshot.getString("User_id");
-                            holder.UsserData(username);
-
-                        }
-                    }
-                });
-
-
-
-
-
-
-
+//        firebaseFirestore.collection("Post/"+User_id+"/Comments").document(currentuserid)
+//                .addSnapshotListener(new EventListener<DocumentSnapshot>() {
+//                    @Override
+//                    public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
+//
+//                        if (documentSnapshot.exists()){
+//
+//                            String username = documentSnapshot.getString("User_id");
+//                            holder.UsserData(username);
+//
+//                        }
+//                    }
+//                });
+//
+//        firebaseFirestore.collection("Post").document(User_id).collection("Comments").document(User_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//            @Override
+//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//
+//                if(task.isSuccessful()){
+//
+//                    DocumentSnapshot snapshot = task.getResult();
+//
+//                    if (snapshot.exists()) {
+//
+//                        String userName = task.getResult().getString("Name");
+//
+//
+//                        holder.UsserData(userName);
+//
+//
+//
+//
+//                    } else {
+//
+//                    }
+//
+//
+//
+//                }
+//
+//            }
+//        });
+//
 
 
     }
@@ -113,8 +132,6 @@ public class CommentRecycleAdapter extends RecyclerView.Adapter<CommentRecycleAd
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-
-
         private View mView;
 
         private TextView comment_message;
@@ -125,8 +142,6 @@ public class CommentRecycleAdapter extends RecyclerView.Adapter<CommentRecycleAd
             super(itemView);
             mView = itemView;
 
-
-
         }
 
         public void setComment_message(String message){
@@ -135,7 +150,6 @@ public class CommentRecycleAdapter extends RecyclerView.Adapter<CommentRecycleAd
             comment_message.setText(message);
 
         }
-
 //        private void UsserData(String name , String image){
 //
 //            comment_user_name = mView.findViewById(R.id.item_username);
@@ -148,7 +162,6 @@ public class CommentRecycleAdapter extends RecyclerView.Adapter<CommentRecycleAd
 //
 //            Glide.with(context).applyDefaultRequestOptions(placeholder).load(image).into(user_commnet_image);
 //        }
-
 
         public void UsserData(String userName) {
 

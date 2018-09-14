@@ -21,6 +21,8 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class Page_login extends AppCompatActivity {
 
+//    Declare all thing her
+
     private EditText username;
     private EditText pass;
     private Button login;
@@ -33,6 +35,8 @@ public class Page_login extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_page_login);
 
+//        Initiliazing here
+
         mAuth = FirebaseAuth.getInstance();
 
         username = findViewById(R.id.username);
@@ -40,11 +44,18 @@ public class Page_login extends AppCompatActivity {
         login = findViewById(R.id.login_btn);
         progressDialog = new ProgressDialog(this);
 
+//        setOnclick on loging button
+
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
+//      when i pess loging buttton it show progresss Dailog
+
+//                creat startlogint method
+
                 Startloging();
+
                 progressDialog.setMessage("Please wait we are checking your account");
                 progressDialog.setTitle("Loging");
                 progressDialog.setCanceledOnTouchOutside(false);
@@ -55,11 +66,16 @@ public class Page_login extends AppCompatActivity {
         });
     }
 
+//    here is my startloggng method
+
     private void Startloging() {
 
+// get The text what is writen in email field and pass
 
     String email = username.getText().toString();
     final String password = pass.getText().toString();
+
+//        her i check text field is not empty than execute code
 
         if (!TextUtils.isEmpty(email) && !TextUtils.isEmpty(password)){
         mAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {

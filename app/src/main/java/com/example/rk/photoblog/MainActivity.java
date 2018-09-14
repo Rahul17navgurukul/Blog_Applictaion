@@ -6,6 +6,7 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -38,6 +39,10 @@ public class MainActivity extends AppCompatActivity {
     private Notification_Fragment notification_fragment;
     private Account_Fragment account_fragment;
     private BottomNavigationView bottomNavigationView;
+
+    private SwipeRefreshLayout swipeContainer;
+
+
 
 
     @Override
@@ -81,13 +86,12 @@ public class MainActivity extends AppCompatActivity {
 
                             return true;
 
-//                        case R.id.bottm_notification:
-//                            replaceFragment(notification_fragment);
-//
-//                            return true;
 
                         case R.id.bott_account:
                             replaceFragment(account_fragment);
+                            Intent m = new Intent(MainActivity.this,Setup_Page.class);
+                            startActivity(m);
+
 
                             return true;
                     }
@@ -98,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
             });
 
 
-//          Here I am handing the floting button and set onclick
+//          Here I am handling the floting button and set onclick
 
             add_post_btn.setOnClickListener(new View.OnClickListener() {
                 @Override
